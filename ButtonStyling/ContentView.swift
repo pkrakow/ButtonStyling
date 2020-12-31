@@ -28,6 +28,9 @@ struct ContentView: View {
                     
                 }.buttonStyle(SpecialButtonStyle(actionType: .confirm))
             }.padding()
+            Button("Sample 3") {
+                print("Tap that Circle")
+            }.buttonStyle(RoundButtonStyle())
         }
     }
 }

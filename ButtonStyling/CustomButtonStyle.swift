@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+struct RoundButtonStyle: ButtonStyle {
+    func makeBody(configuration: Self.Configuration) -> some View {
+        configuration.label
+            .frame(width: 100, height: 100)
+            .foregroundColor(Color.black)
+            .background(Color.red)
+            .clipShape(Circle())
+    }
+}
+
 struct FilledRoundedCornerButtonStyle: ButtonStyle {
     var font: Font = .title
     var padding: CGFloat = 8
