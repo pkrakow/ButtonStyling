@@ -13,6 +13,7 @@
 		DAF4565C259D4B840067345D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DAF4565B259D4B840067345D /* Preview Assets.xcassets */; };
 		DAF45667259D4B850067345D /* ButtonStylingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF45666259D4B850067345D /* ButtonStylingTests.swift */; };
 		DAF45672259D4B850067345D /* ButtonStylingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF45671259D4B850067345D /* ButtonStylingUITests.swift */; };
+		DAF45683259D542F0067345D /* CustomButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF45682259D542F0067345D /* CustomButtonStyle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		DAF4566D259D4B850067345D /* ButtonStylingUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ButtonStylingUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAF45671259D4B850067345D /* ButtonStylingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStylingUITests.swift; sourceTree = "<group>"; };
 		DAF45673259D4B850067345D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DAF45682259D542F0067345D /* CustomButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonStyle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 			children = (
 				DAF45654259D4B830067345D /* ButtonStylingApp.swift */,
 				DAF45656259D4B830067345D /* ContentView.swift */,
+				DAF45682259D542F0067345D /* CustomButtonStyle.swift */,
 				DAF45658259D4B840067345D /* Assets.xcassets */,
 				DAF4565D259D4B840067345D /* Info.plist */,
 				DAF4565A259D4B840067345D /* Preview Content */,
@@ -259,6 +262,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAF45683259D542F0067345D /* CustomButtonStyle.swift in Sources */,
 				DAF45657259D4B830067345D /* ContentView.swift in Sources */,
 				DAF45655259D4B830067345D /* ButtonStylingApp.swift in Sources */,
 			);
