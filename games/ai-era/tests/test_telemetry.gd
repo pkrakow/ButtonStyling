@@ -157,3 +157,17 @@ func test_uuid_v4_format() -> void:
 	var re := RegEx.create_from_string("^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 	for i in 20:
 		check(re.search(Core.new_uuid()) != null, "bad uuid")
+
+
+func test_per_run_id_scope_drops_install_and_session_ids() -> void:
+	var made := _make("scope")
+	var t = Core.new(made[2].path_join("run-scope"), made[1], {"id_scope": "run"})
+	t.enable("install-abc")
+	t.begin_run("run-1", 5)
+	var ev: Dictionary = t.track("decision", {})
+	eq(ev.install_id, null, "no install id in per-run scope")
+	eq(ev.session_id, null, "no session id in per-run scope")
+	eq(ev.run_id, "run-1", "run id kept")
+	var t2 = _make("scope2")[0]
+	t2.enable("install-abc")
+	eq(t2.track("e", {}).install_id, "install-abc", "per-install is the default")

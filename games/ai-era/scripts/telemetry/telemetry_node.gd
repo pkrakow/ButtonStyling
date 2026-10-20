@@ -21,6 +21,7 @@ func _ready() -> void:
 		"build_type": "debug" if OS.is_debug_build() else "release",
 		"platform": OS.get_name(),
 		"batch_size": ProjectSettings.get_setting("ai_era/telemetry/batch_size", 50),
+		"id_scope": ProjectSettings.get_setting("ai_era/telemetry/id_scope", "install"),
 	})
 	flush_interval = ProjectSettings.get_setting("ai_era/telemetry/flush_interval_sec", 30.0)
 	endpoint = OS.get_environment("AI_ERA_TELEMETRY_ENDPOINT")
@@ -34,11 +35,15 @@ func _ready() -> void:
 	if Settings.consent() == "granted":
 		core.enable(_ensure_install_id())
 	Settings.changed.connect(_on_setting_changed)
-	gl.info("telemetry.init", {"enabled": core.enabled, "sink": "http" if endpoint != "" else "null", "queued": core.queue.size()})
+	gl.info("telemetry.init", {"enabled": core.enabled, "id_scope": core.id_scope, "sink": "http" if endpoint != "" else "null", "queued": core.queue.size()})
 
 
 func track(event_name: String, props: Dictionary = {}) -> Dictionary:
 	return core.track(event_name, props)
+
+
+func id_scope() -> String:
+	return core.id_scope
 
 
 func is_enabled() -> bool:

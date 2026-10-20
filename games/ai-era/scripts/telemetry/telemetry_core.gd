@@ -17,6 +17,10 @@ var game_version: String
 var build_type: String
 var platform: String
 var batch_size: int
+## "install": events carry the persistent random install_id and session_id.
+## "run": both are null and only the per-run run_id remains, so uploaded data
+## cannot be linked across runs or to the device. Changes the App Store label.
+var id_scope := "install"
 var logger: LogCore
 
 var enabled := false
@@ -43,6 +47,8 @@ func _init(p_dir: String, p_log: LogCore, opts: Dictionary = {}) -> void:
 	build_type = opts.get("build_type", "debug")
 	platform = opts.get("platform", OS.get_name())
 	batch_size = opts.get("batch_size", 50)
+	id_scope = opts.get("id_scope", "install")
+	assert(id_scope in ["install", "run"], "id_scope must be install or run")
 	session_id = new_uuid()
 	DirAccess.make_dir_recursive_absolute(dir)
 	_load_queue()
@@ -107,8 +113,8 @@ func track(event_name: String, props: Dictionary = {}) -> Dictionary:
 		"seq": seq,
 		"ts": LogCore.iso_now(),
 		"ts_ms": int(now * 1000.0),
-		"install_id": install_id,
-		"session_id": session_id,
+		"install_id": install_id if id_scope == "install" else null,
+		"session_id": session_id if id_scope == "install" else null,
 		"run_id": run_id if run_id != "" else null,
 		"seed": run_seed,
 		"game_version": game_version,
