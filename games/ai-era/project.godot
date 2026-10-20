@@ -1,0 +1,46 @@
+; Engine configuration file.
+; Edit through the Godot editor when possible; hand edits are fine for these keys.
+
+config_version=5
+
+[application]
+
+config/name="Runtime: Takeoff"
+config/description="A short pixel-art sim about steering AI from the 2022 chatbot launch onward."
+config/version="0.1.0"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.7")
+config/icon="res://icon.svg"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="RuntimeTakeoff"
+
+[autoload]
+
+GameLog="*res://scripts/core/game_log_node.gd"
+Settings="*res://scripts/core/settings.gd"
+Telemetry="*res://scripts/telemetry/telemetry_node.gd"
+SteamService="*res://scripts/platform/steam_service.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[ai_era]
+
+telemetry/endpoint=""
+telemetry/batch_size=50
+telemetry/flush_interval_sec=30.0
+steam/app_id=480
+
+[gui]
+
+theme/default_font_antialiasing=1
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
