@@ -19,6 +19,9 @@ const RAMPS := {
 	"compute": [Color("1a2238"), Color("6ec6ff")],
 	"adoption": [Color("2a2238"), Color("d58cff")],
 }
+signal region_tapped(index: int)
+
+const OVERLAY_SHORT := {"prosperity": "Prosperity", "jobs": "Jobs", "unrest": "Unrest", "compute": "Compute", "adoption": "AI use"}
 const OVERLAY_NAMES := {"prosperity": "Prosperity", "jobs": "Jobs", "unrest": "Unrest", "compute": "Compute", "adoption": "AI adoption"}
 const BAYER := [Vector2i(0, 0), Vector2i(1, 1), Vector2i(1, 0), Vector2i(0, 1)]
 
@@ -98,8 +101,10 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 
-func cell_size() -> int:
-	return maxi(2, int(floor(minf(size.x / GRID_W, size.y / GRID_H))))
+## Fractional on narrow phone screens so the map fills the width; the stretch
+## to device pixels keeps cells crisp enough at 3x.
+func cell_size() -> float:
+	return maxf(2.0, minf(size.x / GRID_W, size.y / GRID_H))
 
 
 func origin() -> Vector2:
@@ -107,12 +112,27 @@ func origin() -> Vector2:
 	return ((size - Vector2(GRID_W * c, GRID_H * c)) / 2.0).floor()
 
 
+func region_at(pos: Vector2) -> int:
+	var g := ((pos - origin()) / cell_size()).floor()
+	if g.x < 0 or g.y < 0 or g.x >= GRID_W or g.y >= GRID_H:
+		return -1
+	return cells[int(g.y) * GRID_W + int(g.x)]
+
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var ri := region_at(event.position)
+		if ri >= 0:
+			region_tapped.emit(ri)
+			accept_event()
+
+
 func _draw() -> void:
 	if shown.is_empty():
 		return
 	var c := cell_size()
 	var o := origin()
-	var half := maxi(1, c / 2)
+	var half := maxf(1.0, c / 2.0)
 	draw_rect(Rect2(o, Vector2(GRID_W * c, GRID_H * c)), OCEAN)
 	if not reduced_motion:
 		var shift := int(_time * 2.0)
@@ -145,7 +165,7 @@ func _draw() -> void:
 		_draw_label(ri, c, o)
 
 
-func _draw_sprites(ri: int, c: int, o: Vector2) -> void:
+func _draw_sprites(ri: int, c: float, o: Vector2) -> void:
 	var r: Dictionary = shown[ri]
 	var spots: Array = region_cells[ri]
 	var idx := 0
@@ -177,7 +197,7 @@ func _draw_sprites(ri: int, c: int, o: Vector2) -> void:
 				draw_rect(Rect2(o + Vector2(cell) * c, Vector2(c, c)), Color(1, 1, 1, 0.18))
 
 
-func _draw_label(ri: int, c: int, o: Vector2) -> void:
+func _draw_label(ri: int, c: float, o: Vector2) -> void:
 	var meta: Dictionary = D.REGIONS[ri]
 	var v: float = target[ri][overlay]
 	var prev: float = previous[ri][overlay] if ri < previous.size() else v
@@ -187,7 +207,7 @@ func _draw_label(ri: int, c: int, o: Vector2) -> void:
 	elif prev - v >= 0.5:
 		arrow = " ▼"
 	var text := "%s %d%s" % [meta.code, int(round(v)), arrow]
-	var fs := 14 if c >= 7 else 11
+	var fs := 14 if c >= 7.0 else 10
 	var tsize := _font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs)
 	var p := o + Vector2(meta.label[0] * c, meta.label[1] * c)
 	draw_rect(Rect2(p - Vector2(4, tsize.y - 2), tsize + Vector2(8, 4)), Color(0.04, 0.06, 0.1, 0.85))
@@ -198,11 +218,7 @@ func _draw_label(ri: int, c: int, o: Vector2) -> void:
 func _get_tooltip(at_position: Vector2) -> String:
 	if target.is_empty():
 		return ""
-	var c := cell_size()
-	var g := ((at_position - origin()) / c).floor()
-	if g.x < 0 or g.y < 0 or g.x >= GRID_W or g.y >= GRID_H:
-		return ""
-	var ri := cells[int(g.y) * GRID_W + int(g.x)]
+	var ri := region_at(at_position)
 	if ri < 0:
 		return ""
 	var r: Dictionary = target[ri]

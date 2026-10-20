@@ -13,7 +13,7 @@ func setup(p_title: String, p_values: Array, p_fmt: String, p_color: Color) -> v
 	values = PackedFloat32Array(p_values)
 	fmt = p_fmt
 	line_color = p_color
-	custom_minimum_size = Vector2(220, 110)
+	custom_minimum_size = Vector2(150, 96)
 	tooltip_text = "%s: %s → %s" % [title, fmt % values[0], fmt % values[-1]] if values.size() > 0 else title
 	queue_redraw()
 

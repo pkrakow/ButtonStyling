@@ -57,6 +57,8 @@ func apply_display() -> void:
 	if not is_inside_tree() or DisplayServer.get_name() == "headless":
 		return
 	get_tree().root.content_scale_factor = float(get_value("ui/scale"))
+	if OS.has_feature("mobile"):
+		return
 	var fs: bool = get_value("display/fullscreen")
 	var mode := DisplayServer.WINDOW_MODE_FULLSCREEN if fs else DisplayServer.WINDOW_MODE_WINDOWED
 	if DisplayServer.window_get_mode() != mode:

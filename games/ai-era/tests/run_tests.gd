@@ -6,8 +6,10 @@ extends SceneTree
 const SUITES := [
 	"res://tests/test_simulation.gd",
 	"res://tests/test_telemetry.gd",
-	"res://tests/test_steam_rules.gd",
+	"res://tests/test_platform.gd",
 	"res://tests/test_consent_flow.gd",
+	"res://tests/test_persistence.gd",
+	"res://tests/test_ui.gd",
 ]
 
 
@@ -31,7 +33,7 @@ func _run() -> void:
 				continue
 			var suite = script.new()
 			var t0 := Time.get_ticks_msec()
-			suite.call(name)
+			await suite.call(name)
 			var ms := Time.get_ticks_msec() - t0
 			if suite.failures.is_empty():
 				passed += 1

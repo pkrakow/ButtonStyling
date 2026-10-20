@@ -8,7 +8,8 @@ config_version=5
 config/name="Runtime: Takeoff"
 config/name.macos="Runtime Takeoff"
 config/description="A short pixel-art sim about steering AI from the 2022 chatbot launch onward."
-config/version="0.1.0"
+run/low_processor_mode=true
+config/version="0.2.0"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.7")
 config/icon="res://icon.svg"
@@ -20,21 +21,32 @@ config/custom_user_dir_name="RuntimeTakeoff"
 GameLog="*res://scripts/core/game_log_node.gd"
 Settings="*res://scripts/core/settings.gd"
 Telemetry="*res://scripts/telemetry/telemetry_node.gd"
-SteamService="*res://scripts/platform/steam_service.gd"
+Platform="*res://scripts/platform/platform_services.gd"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=720
+window/size/viewport_width=390
+window/size/viewport_height=844
+window/size/window_width_override=540
+window/size/window_height_override=1169
+window/handheld/orientation=1
+window/ios/hide_home_indicator=false
+window/ios/hide_status_bar=true
+window/ios/suppress_ui_gesture=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
 [ai_era]
 
 telemetry/endpoint=""
+telemetry/id_scope="install"
 telemetry/batch_size=50
 telemetry/flush_interval_sec=30.0
+steam/enabled=false
 steam/app_id=480
+game_center/enabled=false
+game_center/achievement_prefix="com.example.runtimetakeoff"
+privacy_policy_url=""
 
 [gui]
 
@@ -46,3 +58,7 @@ textures/canvas_textures/default_texture_filter=0
 textures/vram_compression/import_etc2_astc=true
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+
+[input_devices]
+
+pointing/emulate_mouse_from_touch=true
