@@ -135,7 +135,7 @@ func _button(text: String, element: String, cb: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.pressed.connect(func():
-		_track("ui_interaction", {"element": element, "action": "press", "screen": current_screen, "input": last_input})
+		_track("ui_interaction", {"element": element, "action": "press", "screen": _layer_name() if layer else current_screen, "input": last_input})
 		cb.call())
 	return b
 
@@ -796,6 +796,8 @@ func _privacy_text() -> String:
 		return "The privacy notice could not be loaded. Find it at docs/PRIVACY.md in the game folder."
 	var out := []
 	for line in f.get_as_text().split("\n"):
+		if line.begins_with("# "):
+			continue
 		out.append(line.trim_prefix("# ").trim_prefix("## ").replace("**", "").replace("`", ""))
 	return "\n".join(out)
 

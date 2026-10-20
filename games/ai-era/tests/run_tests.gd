@@ -7,6 +7,7 @@ const SUITES := [
 	"res://tests/test_simulation.gd",
 	"res://tests/test_telemetry.gd",
 	"res://tests/test_steam_rules.gd",
+	"res://tests/test_consent_flow.gd",
 ]
 
 
