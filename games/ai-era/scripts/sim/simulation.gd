@@ -390,7 +390,7 @@ func summary() -> Dictionary:
 	return {
 		"ending": ending_id,
 		"turns": turn,
-		"final_date": date_label(),
+		"final_date": "%d Q%d" % [date_for_turn(turn - 1).year, date_for_turn(turn - 1).quarter],
 		"population_start_m": snappedf(start_pop, 0.1),
 		"population_end_m": snappedf(world_population(), 0.1),
 		"state": snapshot(),

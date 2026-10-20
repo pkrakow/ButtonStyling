@@ -6,6 +6,7 @@ config_version=5
 [application]
 
 config/name="Runtime: Takeoff"
+config/name.macos="Runtime Takeoff"
 config/description="A short pixel-art sim about steering AI from the 2022 chatbot launch onward."
 config/version="0.1.0"
 run/main_scene="res://scenes/main.tscn"
@@ -42,5 +43,6 @@ theme/default_font_antialiasing=1
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
+textures/vram_compression/import_etc2_astc=true
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
