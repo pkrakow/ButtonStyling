@@ -1,7 +1,7 @@
 extends RefCounted
-## Pure mapping from gameplay moments to Steam achievements and stats, so the
-## rules are testable without Steam. API names must match Steamworks App Admin.
-## Stats are aggregated by Valve and carry no personal data.
+## Pure mapping from gameplay moments to achievements and stats, testable without any
+## store SDK. API names are the canonical ids: Steam uses them as-is, Game Center as
+## "<prefix>.<name lowercased>" (see game_center_service.gd). Stats carry no personal data.
 
 const ACHIEVEMENTS := {
 	"ACH_FIRST_DECISION": "First call: make your first decision.",
