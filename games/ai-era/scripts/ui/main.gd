@@ -3,7 +3,8 @@ extends Control
 ## Every screen is built in code from standard controls so keyboard focus, touch,
 ## tooltips and accessibility names work out of the box. Tap targets are >= 44 pt.
 ## Dev flags (after `--`): --autoplay, --capture=<dir>, --seed=<n>,
-##   --sim-safe-area=<top>,<bottom> (draws a notch and home indicator), --dev-keys (F8 = background/foreground).
+##   --sim-safe-area=<top>,<bottom> (phone mode: notch, home indicator, no desktop-only controls),
+##   --dev-keys (F8 = background/foreground).
 
 const UITheme := preload("res://scripts/ui/ui_theme.gd")
 const Sim := preload("res://scripts/sim/simulation.gd")
@@ -109,8 +110,19 @@ func _parse_dev_args() -> void:
 	_dev_rng.seed = 99
 
 
+## True on iOS/Android, and on desktop when simulating a phone with --sim-safe-area
+## (hides desktop-only controls such as Quit and Fullscreen).
 static func is_mobile() -> bool:
-	return OS.has_feature("mobile")
+	return phone_layout(OS.has_feature("mobile"), OS.get_cmdline_user_args())
+
+
+static func phone_layout(mobile_feature: bool, user_args: PackedStringArray) -> bool:
+	if mobile_feature:
+		return true
+	for a in user_args:
+		if a.begins_with("--sim-safe-area="):
+			return true
+	return false
 
 
 # ------------------------------------------------------------------ safe area
@@ -601,13 +613,28 @@ func _build_game_screen() -> void:
 	pause.tooltip_text = "Pause (Esc)"
 	for c in [date_col, spacer, hud.seed, pause]:
 		top.add_child(c)
-	outer.add_child(top)
 	hud.progress = ProgressBar.new()
 	hud.progress.max_value = D.MAX_TURNS
 	hud.progress.show_percentage = false
 	hud.progress.custom_minimum_size = Vector2(0, 6)
 	_accessible(hud.progress, "Run progress")
-	outer.add_child(hud.progress)
+
+	# Date, turn and Pause stay pinned above the scrolling content.
+	var root: Control = parts[0]
+	var scroll: ScrollContainer = root.get_child(0)
+	root.remove_child(scroll)
+	var frame := VBoxContainer.new()
+	frame.add_theme_constant_override("separation", 6)
+	root.add_child(frame)
+	var header := VBoxContainer.new()
+	header.add_theme_constant_override("separation", 6)
+	header.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	header.custom_minimum_size.x = content_width()
+	header.add_child(top)
+	header.add_child(hud.progress)
+	frame.add_child(header)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	frame.add_child(scroll)
 
 	map = WorldMap.new()
 	map.custom_minimum_size = Vector2(0, 178)

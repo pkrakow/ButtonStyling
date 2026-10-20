@@ -143,3 +143,10 @@ func test_end_screen_records_collection() -> void:
 	eq(main.collection.found_count(), 1, "ending recorded in collection")
 	check(not main.save.exists(), "save cleared after the run ends")
 	await _teardown()
+
+
+func test_phone_layout_on_mobile_or_simulated_phone() -> void:
+	var Main = load("res://scripts/ui/main.gd")
+	check(Main.phone_layout(true, PackedStringArray()), "mobile feature means phone layout")
+	check(Main.phone_layout(false, PackedStringArray(["--sim-safe-area=59,34"])), "simulated safe area means phone layout")
+	check(not Main.phone_layout(false, PackedStringArray(["--autoplay"])), "plain desktop keeps desktop controls")
