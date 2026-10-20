@@ -1,6 +1,8 @@
-# Steam integration point
+# Steam integration point (on hold)
 
-`scripts/platform/steam_service.gd` (autoload `SteamService`) is the only code that talks to Steam.
+Steam is on hold while iOS ships first. The code stays in the repo for later, but it is off (`ai_era/steam/enabled=false`) and the iOS export preset excludes `steam_service.gd`.
+
+`scripts/platform/steam_service.gd` is the only code that talks to Steam. It is one backend of the `Platform` autoload (`scripts/platform/platform_services.gd`), which picks Game Center on iOS, Steam on desktop when enabled and GodotSteam is present, and otherwise a stub (`achievement_service.gd`).
 
 - **Without GodotSteam** (the default in this repo), it runs as a stub. Achievements and stats are kept in memory and logged as `INFO steam.init mode=stub`. The game plays normally.
 - **With GodotSteam**, the GDExtension registers a `Steam` engine singleton. The service calls `steamInitEx(app_id, true)` and checks that `status == 0`, then runs `run_callbacks()` every frame, including while paused. If init fails, it logs `WARN steam.init mode=stub status=N` and keeps playing.
@@ -9,12 +11,12 @@
 ## Enabling GodotSteam
 
 1. Download the GodotSteam **GDExtension** build that matches Godot 4.7 and unpack it to `addons/godotsteam/`. It ships `steam_api64.dll` and `libsteam_api.so`, and on macOS `libsteam_api.dylib`.
-2. Set `ai_era/steam/app_id` in `project.godot`. Use `480` (SpaceWar) until the real App ID exists. Do not ship `steam_appid.txt`.
+2. Set `ai_era/steam/enabled=true` and `ai_era/steam/app_id` in `project.godot`. Use `480` (SpaceWar) until the real App ID exists. Do not ship `steam_appid.txt`.
 3. Export as usual (`tools/export_all.sh`). No code changes are needed.
 
 ## Achievements and stats
 
-The rules live in `scripts/platform/steam_rules.gd`, which is pure and unit-tested. Stats are written with `setStatInt` and achievements with `setAchievement`. `storeStats()` is called at run end and abandon. Create these API names in Steamworks App Admin, marking the ending achievements as **Spoiler**.
+The rules live in `scripts/platform/achievement_rules.gd` (shared with Game Center), which is pure and unit-tested. Stats are written with `setStatInt` and achievements with `setAchievement`. `storeStats()` is called at run end and abandon. Create these API names in Steamworks App Admin, marking the ending achievements as **Spoiler**.
 
 | API name | Type | Trigger |
 |---|---|---|
