@@ -26,6 +26,7 @@ var ending_id: String = ""
 var unrest_streak: int = 0
 var picks_by_type: Dictionary = {"policy": 0, "research": 0, "invest": 0}
 var picked_cards: Array = []
+var actions: Array = [] # [["c"|"d", index], ...] replayable from the seed
 var _last_offer_ids: Array = []
 
 
@@ -55,6 +56,7 @@ func start(p_seed: int) -> void:
 	unrest_streak = 0
 	picks_by_type = {"policy": 0, "research": 0, "invest": 0}
 	picked_cards = []
+	actions = []
 	_last_offer_ids = []
 	for ev in D.EVENTS:
 		if ev.get("scripted_turn", -1) == 0:
@@ -132,6 +134,7 @@ func choose_card(index: int) -> bool:
 	if phase != Phase.CARD or index < 0 or index >= offers.size():
 		return false
 	var card: Dictionary = offers[index]
+	actions.append(["c", index])
 	picks_by_type[card.type] += 1
 	picked_cards.append(card.id)
 	turn_news = []
@@ -154,12 +157,27 @@ func choose_dilemma(index: int) -> bool:
 	if index < 0 or index >= opts.size():
 		return false
 	var opt: Dictionary = opts[index]
+	actions.append(["d", index])
 	_apply_fx(opt.fx, pending_event.get("target_index", -1))
 	if opt.has("sets"):
 		flags[opt.sets] = true
 	pending_event = {}
 	_finish_turn()
 	return true
+
+
+## Rebuilds a run from its seed and recorded actions. Returns null if the actions
+## no longer replay (for example, content changed between versions).
+static func restore(p_seed: int, p_actions: Array):
+	var sim = load("res://scripts/sim/simulation.gd").new()
+	sim.start(p_seed)
+	for a in p_actions:
+		if not (a is Array and a.size() == 2):
+			return null
+		var ok: bool = sim.choose_card(int(a[1])) if a[0] == "c" else sim.choose_dilemma(int(a[1]))
+		if not ok:
+			return null
+	return sim
 
 
 # ---------------------------------------------------------------- internals
